@@ -11,10 +11,12 @@ QT += opengl
 HEADERS = OGLQuad.h \
     OGLPyramid.h \
     OGLPyramid.h \
-    light.h
+    light.h \
+    scene3d.h
 
 SOURCES += main.cpp \
     OGLQuad.cpp \
     OGLPyramid.cpp \
-    light.cpp
+    light.cpp \
+    scene3d.cpp
 TARGET = ../OGLQuad
