@@ -20,7 +20,7 @@ QPoint m_ptPosition;
 QVector<GLfloat> vecVertices;
 QVector<GLfloat> vecTextures;
 QVector<GLuint> vecIndices;
-GLuint textureID[1]; // размер равен двум, в программе будет всего два текстурных объекта
+GLuint textureID[1]; 
 void genTextures();
     void getIndexArray();
     void getVerTexArrays();
