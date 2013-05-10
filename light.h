@@ -3,22 +3,35 @@
 #include <GL/glu.h>
 #include <QGLWidget>
 #include <QApplication>
+#include <QtOpenGL>
 #include <QKeyEvent>
-
 class light : public QGLWidget
 {
     Q_OBJECT
 public:
 
     explicit light(QWidget *parent = 0);
-    /*void init(void);
-    void display(void);
-    void reshape(int w, int h);*/
+
+
 protected:
+   GLdouble m_xRotate;
+    GLdouble m_yRotate;
+QPoint m_ptPosition;
+QVector<GLfloat> vecVertices;
+QVector<GLfloat> vecTextures;
+QVector<GLuint> vecIndices;
+GLuint textureID[1]; // размер равен двум, в программе будет всего два текстурных объекта
+void genTextures();
+    void getIndexArray();
+    void getVerTexArrays();
+    void drawFigure();
     virtual void initializeGL();
     virtual void resizeGL(int nWidth, int nHeight);
     virtual void paintGL();
     virtual void keyPressEvent(QKeyEvent *);
+    virtual void mousePressEvent(QMouseEvent *pe);
+    virtual void mouseMoveEvent(QMouseEvent *pe);
+
 private:
     GLUquadricObj* m_qObj;
 signals:
@@ -26,5 +39,4 @@ signals:
 public slots:
     
 };
-
 #endif // LIGHT_H
