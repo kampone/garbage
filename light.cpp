@@ -49,8 +49,7 @@ void light::initializeGL()
 void light::paintGL()
 {
    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-   if(m_xRotate==180) m_xRotate=0;
-   if(m_yRotate==180) m_yRotate=0;
+
    glFlush();
    gluSphere(m_qObj,R,20,20);
 
@@ -60,7 +59,7 @@ void light::paintGL()
 
    glRotatef(m_xRotate, 1.0, 0.0, 0.0);
    glRotatef(m_yRotate, 0.0, 1.0, 0.0);
-   glRotatef(0, 0.0, 0.0, 1.0);
+
 
 }
 
