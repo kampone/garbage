@@ -22,9 +22,10 @@ void light::initializeGL()
    GLfloat white_light[]={1.0,1.0,1.0,1.0};
 
    glClearColor(0.0,0.0,0.0,0.0);
-   glShadeModel(GL_SMOOTH);
+   glShadeModel(GL_FLAT);
    glMaterialfv(GL_FRONT,GL_SPECULAR,mat_specular);
    glMaterialfv(GL_FRONT,GL_SHININESS,mat_shininess);
+
 
    glLightfv(GL_LIGHT0,GL_POSITION,light_position);
    glLightfv(GL_LIGHT0,GL_DIFFUSE,white_light);
@@ -47,11 +48,16 @@ void light::initializeGL()
 void light::paintGL()
 {
    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-   gluSphere(m_qObj,0.75f,100,100);
-   glFlush();
 
-   glRotatef(m_xRotate, 1.0, 0.0, 0.0);
-   glRotatef(m_yRotate, 0.0, 1.0, 0.0);
+   glFlush();
+   gluSphere(m_qObj,0.3f,100,100);
+
+   glMatrixMode(GL_MODELVIEW);
+   glLoadIdentity();
+   glTranslatef(0.0+m_xRotate, 0.0, 0.0);
+
+   glRotatef(m_yRotate, 1.0, 0.0, 0.0);
+   glRotatef(m_xRotate, 0.0, 1.0, 0.0);
 }
 
 /*void light::timerEvent(QTimerEvent *)
@@ -199,8 +205,9 @@ void light::drawFigure() // построить фигуру
 void light::genTextures() // функция genTexture() класса Scene3D, создаёт текстуры
 {
    // загрузка изображений
-   QImage image1; // создаём объекты класса QImage (изображения)
-   image1.load("../textures/3.jpg"); // загружаем изображение в переменную image1
+  /* QImage image1; // создаём объекты класса QImage (изображения)
+
+    image1.load("../textures/1.jpg"); // загружаем изображение в переменную image1
 
    image1=QGLWidget::convertToGLFormat(image1); // конвертируем изображение в формат для работы с OpenGL
 
@@ -210,7 +217,7 @@ void light::genTextures() // функция genTexture() класса Scene3D, �
 
    // создаём и связываем текстурные объекты с состоянием текстуры
    // 1-ый текстурный объект
-   glBindTexture(GL_TEXTURE_2D, textureID[0]); // создаём и связываем 1-ый текстурный объект с последующим состоянием текстуры
+   glBindTexture(GL_TEXTURE_2D, textureID[1]); // создаём и связываем 1-ый текстурный объект с последующим состоянием текстуры
    glTexImage2D(GL_TEXTURE_2D, 0, 3, (GLsizei)image1.width(), (GLsizei)image1.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, image1.bits()); // связываем текстурный объект с изображением
 
 
@@ -219,14 +226,14 @@ void light::genTextures() // функция genTexture() класса Scene3D, �
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); // при фильтрации игнорируются тексели, выходящие за границу текстуры для s координаты
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); // при фильтрации игнорируются тексели, выходящие за границу текстуры для t координаты
    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); // цвет текселя полностью замещает цвет фрагмента фигуры
-}
+*/}
 void light::mousePressEvent(QMouseEvent *pe) {
     m_ptPosition = pe->pos();
 }
 
 void light::mouseMoveEvent(QMouseEvent *pe) {
-    m_xRotate += 180 * (GLfloat)(pe->y() - m_ptPosition.y()) / height();
-    m_yRotate += 180 * (GLfloat)(pe->x() - m_ptPosition.x()) / width();
+    m_yRotate += 180 * (GLfloat)(pe->y() - m_ptPosition.y()) / height();
+    m_xRotate += 180 * (GLfloat)(pe->x() - m_ptPosition.x()) / width();
     updateGL();
 
     m_ptPosition = pe->pos();
@@ -249,18 +256,31 @@ void light::resizeGL(int w, int h)
     GLfloat left=-(GLint)w/2,right=(GLint)w,bottom=-(GLint)h,top=(GLint)h,near=1.0,far=50.0;
     //GLfloat left=-16.5,right=16.5,bottom=-10,top=10,near=50.0,far=4000.0;
     glFrustum(left, right, bottom, top, near, far);*/
+
 }
 
 void light::keyPressEvent(QKeyEvent *pe){
+
     switch(pe->key()){
 
     case Qt::Key_Escape:
         QApplication::exit();
         break;
-
+    case Qt::Key_W:
+        m_yRotate-=1;
+        break;
+    case Qt::Key_S:
+        m_yRotate+=1;
+        break;
+    case Qt::Key_A:
+        m_xRotate-=1;
+        break;
+    case Qt::Key_D:
+        m_xRotate+=1;
+        break;
     default:
         QWidget::keyPressEvent(pe);
     }
-    updateGL();
+updateGL();
 
 }
