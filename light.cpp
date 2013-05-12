@@ -2,9 +2,10 @@
 
 const  GLfloat pi=3.141593, k=pi/180;
 const GLuint np=36;
+const GLfloat R=0.7f;
 const GLfloat step=pi/np;
 light::light(QWidget *parent) :
-    QGLWidget(parent), m_xRotate(0), m_yRotate(0)
+    QGLWidget(parent), m_xRotate(0), m_yRotate(0), m_xGo(0), m_yGo(0)
 {
 
   m_qObj = gluNewQuadric();
@@ -50,11 +51,11 @@ void light::paintGL()
    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
    glFlush();
-   gluSphere(m_qObj,0.3f,100,100);
+   gluSphere(m_qObj,R,100,100);
 
    glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();
-   glTranslatef(0.0+m_xRotate, 0.0+m_yRotate, 0.0);
+   glTranslatef(0.0+m_xGo, 0.0+m_yGo, 0.0);
 
    glRotatef(m_yRotate, 1.0, 0.0, 0.0);
    glRotatef(m_xRotate, 0.0, 1.0, 0.0);
@@ -69,7 +70,7 @@ void light::paintGL()
 
 void light::getVerTexArrays() // определить массив вершин и массив текстурных координат
 {
-   GLfloat R=0.75f; // радиус сферы
+
    GLfloat phi, theta; // углы фи и тэта
 
    // двойной цикл по углам
@@ -267,20 +268,23 @@ void light::keyPressEvent(QKeyEvent *pe){
         QApplication::exit();
         break;
     case Qt::Key_W:
-        m_yRotate+=1;
+        m_yRotate-=2;
+
         break;
     case Qt::Key_S:
-        m_yRotate-=1;
+        m_yRotate+=2;
         break;
     case Qt::Key_A:
-        m_xRotate-=1;
+        m_xRotate-=2;
         break;
     case Qt::Key_D:
-        m_xRotate+=1;
+        m_xRotate+=2;
         break;
     default:
         QWidget::keyPressEvent(pe);
     }
+    m_yGo=-(m_yRotate*pi*R)/180;
+    m_xGo=(m_xRotate*pi*R)/180;
     updateGL();
 
 }
