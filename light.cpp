@@ -51,7 +51,7 @@ void light::paintGL()
    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
    glFlush();
-   gluSphere(m_qObj,R,100,100);
+   gluSphere(m_qObj,R,20,20);
 
    glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();
