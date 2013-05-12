@@ -54,7 +54,7 @@ void light::paintGL()
 
    glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();
-   glTranslatef(0.0+m_xRotate, 0.0, 0.0);
+   glTranslatef(0.0+m_xRotate, 0.0+m_yRotate, 0.0);
 
    glRotatef(m_yRotate, 1.0, 0.0, 0.0);
    glRotatef(m_xRotate, 0.0, 1.0, 0.0);
@@ -267,10 +267,10 @@ void light::keyPressEvent(QKeyEvent *pe){
         QApplication::exit();
         break;
     case Qt::Key_W:
-        m_yRotate-=1;
+        m_yRotate+=1;
         break;
     case Qt::Key_S:
-        m_yRotate+=1;
+        m_yRotate-=1;
         break;
     case Qt::Key_A:
         m_xRotate-=1;
@@ -281,6 +281,6 @@ void light::keyPressEvent(QKeyEvent *pe){
     default:
         QWidget::keyPressEvent(pe);
     }
-updateGL();
+    updateGL();
 
 }
