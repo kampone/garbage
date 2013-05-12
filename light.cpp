@@ -235,6 +235,8 @@ void light::mousePressEvent(QMouseEvent *pe) {
 void light::mouseMoveEvent(QMouseEvent *pe) {
     m_yRotate += 180 * (GLfloat)(pe->y() - m_ptPosition.y()) / height();
     m_xRotate += 180 * (GLfloat)(pe->x() - m_ptPosition.x()) / width();
+    m_yGo=-(m_yRotate*pi*R)/180;
+    m_xGo=(m_xRotate*pi*R)/180;
     updateGL();
 
     m_ptPosition = pe->pos();

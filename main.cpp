@@ -25,7 +25,7 @@ int main(int argc, char **argv)
     light w;
 
     w.resize(500,500);
-    w.showFullScreen();
+    w.show();
 
 
    return app.exec();
