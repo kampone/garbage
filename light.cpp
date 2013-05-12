@@ -1,8 +1,8 @@
 #include "light.h"
 
-const  GLfloat pi=3.141593, k=pi/180;
+const  GLfloat pi=3.1415926535897932384626433832795, k=pi/180;
 const GLuint np=36;
-const GLfloat R=0.7f;
+const GLfloat R=0.3f;
 const GLfloat step=pi/np;
 light::light(QWidget *parent) :
     QGLWidget(parent), m_xRotate(0), m_yRotate(0), m_xGo(0), m_yGo(0)
@@ -49,16 +49,19 @@ void light::initializeGL()
 void light::paintGL()
 {
    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-
+   if(m_xRotate==180) m_xRotate=0;
+   if(m_yRotate==180) m_yRotate=0;
    glFlush();
    gluSphere(m_qObj,R,20,20);
 
    glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();
-   glTranslatef(0.0+m_xGo, 0.0+m_yGo, 0.0);
+   glTranslatef(m_xGo, m_yGo, 0.0);
 
-   glRotatef(m_yRotate, 1.0, 0.0, 0.0);
-   glRotatef(m_xRotate, 0.0, 1.0, 0.0);
+   glRotatef(m_xRotate, 1.0, 0.0, 0.0);
+   glRotatef(m_yRotate, 0.0, 1.0, 0.0);
+   glRotatef(0, 0.0, 0.0, 1.0);
+
 }
 
 /*void light::timerEvent(QTimerEvent *)
@@ -233,10 +236,10 @@ void light::mousePressEvent(QMouseEvent *pe) {
 }
 
 void light::mouseMoveEvent(QMouseEvent *pe) {
-    m_yRotate += 180 * (GLfloat)(pe->y() - m_ptPosition.y()) / height();
-    m_xRotate += 180 * (GLfloat)(pe->x() - m_ptPosition.x()) / width();
-    m_yGo=-(m_yRotate*pi*R)/180;
-    m_xGo=(m_xRotate*pi*R)/180;
+    m_xRotate += 180 * (GLfloat)(pe->y() - m_ptPosition.y()) / height();
+    m_yRotate += 180 * (GLfloat)(pe->x() - m_ptPosition.x()) / width();
+    m_xGo=(m_yRotate*pi*R)/180;
+    m_yGo=-(m_xRotate*pi*R)/180;
     updateGL();
 
     m_ptPosition = pe->pos();
@@ -270,23 +273,23 @@ void light::keyPressEvent(QKeyEvent *pe){
         QApplication::exit();
         break;
     case Qt::Key_W:
-        m_yRotate-=2;
+        m_xRotate-=2;
 
         break;
     case Qt::Key_S:
-        m_yRotate+=2;
+        m_xRotate+=2;
         break;
     case Qt::Key_A:
-        m_xRotate-=2;
+        m_yRotate-=2;
         break;
     case Qt::Key_D:
-        m_xRotate+=2;
+        m_yRotate+=2;
         break;
     default:
         QWidget::keyPressEvent(pe);
     }
-    m_yGo=-(m_yRotate*pi*R)/180;
-    m_xGo=(m_xRotate*pi*R)/180;
+    m_xGo=(m_yRotate*pi*R)/180;
+    m_yGo=-(m_xRotate*pi*R)/180;
     updateGL();
 
 }
