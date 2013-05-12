@@ -16,7 +16,7 @@ light::light(QWidget *parent) :
 void light::initializeGL()
 {
 
-   GLfloat mat_specular[]={1.0,1.0,1.0,1.0};
+   GLfloat mat_specular[]={1.0,0.5,1.0,1.0};
    GLfloat mat_shininess[]={50.0};
    GLfloat light_position[]={1.0,1.0,1.0,0.0};
    GLfloat white_light[]={1.0,1.0,1.0,1.0};
@@ -33,21 +33,22 @@ void light::initializeGL()
    glEnable(GL_LIGHTING);
    glEnable(GL_LIGHT0);
    glEnable(GL_DEPTH_TEST);
-   genTextures(); // создать текстуры
-   glEnable(GL_TEXTURE_2D); // установить режим двумерных текстур
+  // genTextures(); // создать текстуры
+  // glEnable(GL_TEXTURE_2D); // установить режим двумерных текстур
 
 
    getVerTexArrays(); // определить массив текстурных координат вершин
 
 
-   glEnableClientState(GL_TEXTURE_COORD_ARRAY); // активизация массива текстурных координат
+   //glEnableClientState(GL_TEXTURE_COORD_ARRAY); // активизация массива текстурных координат
 }
 
 
 void light::paintGL()
 {
    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-   gluSphere(m_qObj,0.75f,100,100);
+   //gluSphere(m_qObj,0.75f,100,100);
+   drawFigure();
    glFlush();
 
    glRotatef(m_xRotate, 1.0, 0.0, 0.0);
@@ -63,7 +64,7 @@ void light::paintGL()
 
 void light::getVerTexArrays() // определить массив вершин и массив текстурных координат
 {
-   GLfloat R=0.75f; // радиус сферы
+   GLfloat R=7.0f; // радиус сферы
    GLfloat phi, theta; // углы фи и тэта
 
    // двойной цикл по углам
@@ -183,14 +184,14 @@ void light::getIndexArray() // определить массив индексо�
 void light::drawFigure() // построить фигуру
 {
    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // изобразить фигуру в виде каркаса
-   //glColor4f(0.00f, 0.00f, 1.00f, 1.0f); // синий цвет
+  // glColor4f(0.00f, 0.00f, 1.00f, 1.0f); // синий цвет
 
-   glVertexPointer(3, GL_FLOAT, 0, vecVertices.begin()); // указываем, откуда нужно извлечь данные о массиве вершин
-   glTexCoordPointer(2, GL_FLOAT, 0, vecTextures.begin()); // указываем, откуда нужно извлечь данные о массиве текстурных координат
-   glDrawElements(GL_TRIANGLES, vecIndices.size(), GL_UNSIGNED_INT, vecIndices.begin()); // строим поверхности
-    //glPointSize(3.0f); // размер точки примерно в пикселях
+   //glVertexPointer(3, GL_FLOAT, 0, vecVertices.begin()); // указываем, откуда нужно извлечь данные о массиве вершин
+  // glTexCoordPointer(2, GL_FLOAT, 0, vecTextures.begin()); // указываем, откуда нужно извлечь данные о массиве текстурных координат
+  // glDrawElements(GL_TRIANGLES, vecIndices.size(), GL_UNSIGNED_INT, vecIndices.begin()); // строим поверхности
+    glPointSize(10.0f); // размер точки примерно в пикселях
 
-   // glDrawArrays(GL_POINTS, 0, vecVertices.size()/3); // изобразить массив в виде точек
+    glDrawArrays(GL_POINTS, 0, vecVertices.size()/3); // изобразить массив в виде точек
 }
 
 
@@ -200,7 +201,7 @@ void light::genTextures() // функция genTexture() класса Scene3D, �
 {
    // загрузка изображений
    QImage image1; // создаём объекты класса QImage (изображения)
-   image1.load("../textures/3.jpg"); // загружаем изображение в переменную image1
+   image1.load("../textures/3.png"); // загружаем изображение в переменную image1
 
    image1=QGLWidget::convertToGLFormat(image1); // конвертируем изображение в формат для работы с OpenGL
 
@@ -218,7 +219,7 @@ void light::genTextures() // функция genTexture() класса Scene3D, �
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); // задана линейная фильтрация вдали
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); // при фильтрации игнорируются тексели, выходящие за границу текстуры для s координаты
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); // при фильтрации игнорируются тексели, выходящие за границу текстуры для t координаты
-   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); // цвет текселя полностью замещает цвет фрагмента фигуры
+   //glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); // цвет текселя полностью замещает цвет фрагмента фигуры
 }
 void light::mousePressEvent(QMouseEvent *pe) {
     m_ptPosition = pe->pos();

@@ -3,6 +3,7 @@
 #include "OGLQuad.h"
 #include "OGLPyramid.h"
 #include "light.h"
+#include "scene3d.h"
 
 /*int main (int argc, char** argv) {
     QApplication app (argc, argv);
@@ -25,7 +26,8 @@ int main(int argc, char **argv)
     light w;
 
     w.resize(500,500);
-    w.showFullScreen();
+    w.show();
+    //w.showFullScreen();
 
 
    return app.exec();
