@@ -1,12 +1,40 @@
 #include "light.h"
 #include <QGLWidget>
+#include <QDebug>
 
-const  GLfloat pi=3.1415926535897932384626433832795, k=pi/180;
+const  GLdouble pi=3.1415926535897932384626433832795, k=pi/180;
 const GLuint np=36;
 const GLfloat R=0.3f;
 const GLfloat step=pi/np;
+
+void multM(const GLdouble *matrix, GLdouble *vector)
+{
+   //qDebug()<<matrix[0]<<" "<<matrix[1]<<" "<<matrix[2]<<" "<<matrix[3];
+   //qDebug()<<matrix[4]<<" "<<matrix[5]<<" "<<matrix[6]<<" "<<matrix[7];
+   //qDebug()<<matrix[8]<<" "<<matrix[9]<<" "<<matrix[10]<<" "<<matrix[11];
+   //qDebug()<<matrix[12]<<" "<<matrix[13]<<" "<<matrix[14]<<" "<<matrix[15];
+   GLdouble result[4]={0.0, 0.0, 0.0, 0.0};
+   for(int i=0; i<4; ++i)
+      for(int k=0; k<4; ++k){
+         result[i]+=matrix[i+4*k]*vector[k];
+         //qDebug()<<"result["<<i<<"] "<<result[i];
+      }
+   for(int i=0; i<4; ++i){
+      vector[i]=result[i];
+      //qDebug()<<"vector["<<i<<"] "<<vector[i];
+   }
+}
+
 light::light(QWidget *parent) :
-    QGLWidget(parent), m_xRotate(0), m_yRotate(0), m_xGo(0), m_yGo(0)
+    QGLWidget(parent),
+    //m_xRotate(0),
+    //m_yRotate(0),
+    m_xGo(0.0),
+    m_yGo(0.0),
+    m_Phi(0.0),
+    m_dx(0.0),
+    m_dy(0.0),
+    m_dPhi(0.0)
 {
 
   m_qObj = gluNewQuadric();
@@ -34,6 +62,8 @@ void light::initializeGL()
    glEnable(GL_LIGHTING);
    glEnable(GL_LIGHT0);
    glEnable(GL_DEPTH_TEST);
+   glMatrixMode(GL_MODELVIEW);
+   glLoadIdentity();
 
 }
 
@@ -41,15 +71,94 @@ void light::paintGL()
 {
    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
-   glFlush();
-   gluSphere(m_qObj,R,20,20);
+   //glFlush();
+
 
    glMatrixMode(GL_MODELVIEW);
-   glLoadIdentity();
+   //glLoadIdentity();
+   qDebug()<<"m_xGo: "<<m_dx;
+   qDebug()<<"m_yGo: "<<m_dy;
+   qDebug()<<"m_Phi: "<<m_dPhi;
+   //m_xGo+=m_dx;
+   //m_yGo+=m_dy;
+   //m_Phi+=m_dPhi;
 
-   glTranslatef(m_xGo, -m_yGo, 0.0);
+   //GLdouble theta=0.0;
+   GLdouble matrix[16];
+   glGetDoublev(GL_MODELVIEW_MATRIX,matrix);
+   GLdouble point[4]={0.0, 0.0, 0.0, 1.0}, vector[4]={0.0, 0.0, 1.0, 0.0};
+   multM(matrix,point);
+   m_xGo=point[0];
+   m_yGo=point[1];
+   GLdouble z=point[2];
+   qDebug()<<"0point  ("<<point[0]<<", "<<point[1]<<", "<<point[2]<<")";
 
-   glRotatef(m_Rotate,m_yGo, m_xGo,0);
+   qDebug()<<matrix[0]<<" "<<matrix[4]<<" "<<matrix[8]<<" "<<matrix[12];
+   qDebug()<<matrix[1]<<" "<<matrix[5]<<" "<<matrix[9]<<" "<<matrix[13];
+   qDebug()<<matrix[2]<<" "<<matrix[6]<<" "<<matrix[10]<<" "<<matrix[14];
+   qDebug()<<matrix[3]<<" "<<matrix[7]<<" "<<matrix[11]<<" "<<matrix[15];
+
+   glTranslated(-m_xGo, -m_yGo, -z);
+   point[0]=0.0;
+   point[1]=0.0;
+   point[2]=0.0;
+   point[3]=1.0;
+   glGetDoublev(GL_MODELVIEW_MATRIX,matrix);
+   qDebug()<<"matrix1";
+   qDebug()<<matrix[0]<<" "<<matrix[4]<<" "<<matrix[8]<<" "<<matrix[12];
+   qDebug()<<matrix[1]<<" "<<matrix[5]<<" "<<matrix[9]<<" "<<matrix[13];
+   qDebug()<<matrix[2]<<" "<<matrix[6]<<" "<<matrix[10]<<" "<<matrix[14];
+   qDebug()<<matrix[3]<<" "<<matrix[7]<<" "<<matrix[11]<<" "<<matrix[15];
+   multM(matrix,point);
+   qDebug()<<"1point  ("<<point[0]<<", "<<point[1]<<", "<<point[2]<<")";
+
+   glRotated(m_dPhi,m_dy, -m_dx,0.0);
+   point[0]=0.0;
+   point[1]=0.0;
+   point[2]=0.0;
+   point[3]=1.0;
+   glGetDoublev(GL_MODELVIEW_MATRIX,matrix);
+   qDebug()<<"matrixR";
+   qDebug()<<matrix[0]<<" "<<matrix[4]<<" "<<matrix[8]<<" "<<matrix[12];
+   qDebug()<<matrix[1]<<" "<<matrix[5]<<" "<<matrix[9]<<" "<<matrix[13];
+   qDebug()<<matrix[2]<<" "<<matrix[6]<<" "<<matrix[10]<<" "<<matrix[14];
+   qDebug()<<matrix[3]<<" "<<matrix[7]<<" "<<matrix[11]<<" "<<matrix[15];
+   multM(matrix,point);
+   qDebug()<<"Rpoint  ("<<point[0]<<", "<<point[1]<<", "<<point[2]<<")";
+   glTranslated(m_xGo, m_yGo, z);
+   point[0]=0.0;
+   point[1]=0.0;
+   point[2]=0.0;
+   point[3]=1.0;
+   glGetDoublev(GL_MODELVIEW_MATRIX,matrix);
+   qDebug()<<"matrix2";
+   qDebug()<<matrix[0]<<" "<<matrix[4]<<" "<<matrix[8]<<" "<<matrix[12];
+   qDebug()<<matrix[1]<<" "<<matrix[5]<<" "<<matrix[9]<<" "<<matrix[13];
+   qDebug()<<matrix[2]<<" "<<matrix[6]<<" "<<matrix[10]<<" "<<matrix[14];
+   qDebug()<<matrix[3]<<" "<<matrix[7]<<" "<<matrix[11]<<" "<<matrix[15];
+   multM(matrix,point);
+   qDebug()<<"2point  ("<<point[0]<<", "<<point[1]<<", "<<point[2]<<")";
+   glTranslated(m_dx, m_dy, 0.0);
+
+   point[0]=0.0;
+   point[1]=0.0;
+   point[2]=0.0;
+   point[3]=1.0;
+   glGetDoublev(GL_MODELVIEW_MATRIX,matrix);
+   qDebug()<<"matrix3";
+   qDebug()<<matrix[0]<<" "<<matrix[4]<<" "<<matrix[8]<<" "<<matrix[12];
+   qDebug()<<matrix[1]<<" "<<matrix[5]<<" "<<matrix[9]<<" "<<matrix[13];
+   qDebug()<<matrix[2]<<" "<<matrix[6]<<" "<<matrix[10]<<" "<<matrix[14];
+   qDebug()<<matrix[3]<<" "<<matrix[7]<<" "<<matrix[11]<<" "<<matrix[15];
+   multM(matrix,point);
+   qDebug()<<"3point  ("<<point[0]<<", "<<point[1]<<", "<<point[2]<<")";
+   multM(matrix,vector);
+   qDebug()<<"vector ("<<vector[0]<<", "<<vector[1]<<", "<<vector[2]<<")";
+
+   gluSphere(m_qObj,R,20,20);
+   drawAxis();
+   glFlush();
+
 //glRotatef(m_yRotate, 0, 1.0f,0);
 //glRotatef(m_yRotate, -m_yGo, m_xGo, 0.0f);
 
@@ -92,11 +201,13 @@ void light::mouseMoveEvent(QMouseEvent *pe) {
     m_xGo=(m_yRotate*pi*R)/180;
     m_yGo=-(m_xRotate*pi*R)/180;
     */
-    m_yGo+=2 * (GLfloat)(pe->y() - m_ptPosition.y()) / height();
-    m_xGo+=2 * (GLfloat)(pe->x() - m_ptPosition.x()) / height();
+    m_dy=-2 * (GLfloat)(pe->y() - m_ptPosition.y()) / height();
+    m_dx=2 * (GLfloat)(pe->x() - m_ptPosition.x()) / width();
+    //m_yGo+=dx;
+    //m_xGo+=dy;
     //m_yRotate=(m_xGo*180)/(pi*R);
     //m_xRotate=(m_yGo*180)/(pi*R);
-    m_Rotate=(sqrt(m_yGo*m_yGo+m_xGo*m_xGo)*180.0)/(pi*R);
+    m_dPhi=(sqrt(m_dy*m_dy+m_dx*m_dx)*180.0)/(pi*R);
     updateGL();
 
     m_ptPosition = pe->pos();
@@ -130,17 +241,20 @@ void light::keyPressEvent(QKeyEvent *pe){
         QApplication::exit();
         break;
     case Qt::Key_W:
-        m_yGo-=0.03;
-
+        m_dy=+0.03;
+        m_dx=0.0;
         break;
     case Qt::Key_S:
-        m_yGo+=0.03;
+        m_dy=-0.03;
+        m_dx=0.0;
         break;
     case Qt::Key_A:
-        m_xGo-=0.03;
+        m_dx=-0.03;
+        m_dy=0.0;
         break;
     case Qt::Key_D:
-        m_xGo+=0.03;
+        m_dx=+0.03;
+        m_dy=0.0;
         break;
     case Qt::Key_Space:
         defaultScene();
@@ -149,18 +263,20 @@ void light::keyPressEvent(QKeyEvent *pe){
         QWidget::keyPressEvent(pe);
     }
 
-    m_yRotate=(m_xGo*180)/(pi*R);
-    m_xRotate=(m_yGo*180)/(pi*R);
-    m_Rotate=(sqrt(m_yGo*m_yGo+m_xGo*m_xGo)*180.0)/(pi*R);
+    //m_yRotate=(m_xGo*180)/(pi*R);
+    //m_xRotate=(m_yGo*180)/(pi*R);
+    m_dPhi=(0.03*180.0)/(pi*R);
     updateGL();
 
 }
 void light::defaultScene() // наблюдение сцены по умолчанию
 {
-   m_xRotate=0;
-   m_yRotate=0;
-   m_xGo=0;
-   m_yGo=0;
+   //m_xRotate=0;
+   //m_yRotate=0;
+   //m_xGo=0;
+   //m_yGo=0;
+   glMatrixMode(GL_MODELVIEW);
+   glLoadIdentity();
 }
 
 

@@ -16,11 +16,15 @@ public:
 
 protected:
 
-   GLfloat m_xRotate;
-   GLfloat m_yRotate;
+   //GLfloat m_xRotate;
+   //GLfloat m_yRotate;
    GLdouble m_xGo;
    GLdouble m_yGo;
-   GLdouble m_Rotate;
+   GLdouble m_dx;
+   GLdouble m_dy;
+   GLdouble m_dPhi;
+   GLdouble m_Phi;
+   //GLdouble m_Rotate;
    QPoint m_ptPosition;
    void drawAxis();
    virtual void initializeGL();
