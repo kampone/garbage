@@ -17,18 +17,19 @@ public:
 protected:
 
    GLfloat m_xRotate;
-    GLfloat m_yRotate;
+   GLfloat m_yRotate;
    GLdouble m_xGo;
-    GLdouble m_yGo;
-QPoint m_ptPosition;
-void drawAxis();
-virtual void initializeGL();
-virtual void resizeGL(int nWidth, int nHeight);
-virtual void paintGL();
-virtual void keyPressEvent(QKeyEvent *);
-virtual void mousePressEvent(QMouseEvent *pe);
-virtual void mouseMoveEvent(QMouseEvent *pe);
-void defaultScene();
+   GLdouble m_yGo;
+   GLdouble m_Rotate;
+   QPoint m_ptPosition;
+   void drawAxis();
+   virtual void initializeGL();
+   virtual void resizeGL(int nWidth, int nHeight);
+   virtual void paintGL();
+   virtual void keyPressEvent(QKeyEvent *);
+   virtual void mousePressEvent(QMouseEvent *pe);
+   virtual void mouseMoveEvent(QMouseEvent *pe);
+   void defaultScene();
 private:
     GLUquadricObj* m_qObj;
 signals:

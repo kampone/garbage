@@ -3,7 +3,7 @@
 
 const  GLfloat pi=3.1415926535897932384626433832795, k=pi/180;
 const GLuint np=36;
-const GLfloat R=0.7f;
+const GLfloat R=0.3f;
 const GLfloat step=pi/np;
 light::light(QWidget *parent) :
     QGLWidget(parent), m_xRotate(0), m_yRotate(0), m_xGo(0), m_yGo(0)
@@ -47,10 +47,10 @@ void light::paintGL()
    glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();
 
-glTranslatef(m_xGo, -m_yGo, 0.0);
+   glTranslatef(m_xGo, -m_yGo, 0.0);
 
-glRotatef(m_xRotate,1.0f, 0,0);
-glRotatef(m_yRotate, 0, 1.0f,0);
+   glRotatef(m_Rotate,m_yGo, m_xGo,0);
+//glRotatef(m_yRotate, 0, 1.0f,0);
 //glRotatef(m_yRotate, -m_yGo, m_xGo, 0.0f);
 
 
@@ -94,8 +94,9 @@ void light::mouseMoveEvent(QMouseEvent *pe) {
     */
     m_yGo+=2 * (GLfloat)(pe->y() - m_ptPosition.y()) / height();
     m_xGo+=2 * (GLfloat)(pe->x() - m_ptPosition.x()) / height();
-    m_yRotate=(m_xGo*180)/(pi*R);
-    m_xRotate=(m_yGo*180)/(pi*R);
+    //m_yRotate=(m_xGo*180)/(pi*R);
+    //m_xRotate=(m_yGo*180)/(pi*R);
+    m_Rotate=(sqrt(m_yGo*m_yGo+m_xGo*m_xGo)*180.0)/(pi*R);
     updateGL();
 
     m_ptPosition = pe->pos();
@@ -150,6 +151,7 @@ void light::keyPressEvent(QKeyEvent *pe){
 
     m_yRotate=(m_xGo*180)/(pi*R);
     m_xRotate=(m_yGo*180)/(pi*R);
+    m_Rotate=(sqrt(m_yGo*m_yGo+m_xGo*m_xGo)*180.0)/(pi*R);
     updateGL();
 
 }
