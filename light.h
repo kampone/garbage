@@ -16,32 +16,25 @@ public:
 
 protected:
 
-   GLdouble m_xRotate;
-    GLdouble m_yRotate;
+   GLfloat m_xRotate;
+    GLfloat m_yRotate;
    GLdouble m_xGo;
     GLdouble m_yGo;
 QPoint m_ptPosition;
-QVector<GLfloat> vecVertices;
-QVector<GLfloat> vecTextures;
-QVector<GLuint> vecIndices;
-GLuint textureID[1];
-
-void genTextures();
-    void getIndexArray();
-    void getVerTexArrays();
-    void drawFigure();
-    virtual void initializeGL();
-    virtual void resizeGL(int nWidth, int nHeight);
-    virtual void paintGL();
-    virtual void keyPressEvent(QKeyEvent *);
-    virtual void mousePressEvent(QMouseEvent *pe);
-    virtual void mouseMoveEvent(QMouseEvent *pe);
-
+void drawAxis();
+virtual void initializeGL();
+virtual void resizeGL(int nWidth, int nHeight);
+virtual void paintGL();
+virtual void keyPressEvent(QKeyEvent *);
+virtual void mousePressEvent(QMouseEvent *pe);
+virtual void mouseMoveEvent(QMouseEvent *pe);
+void defaultScene();
 private:
     GLUquadricObj* m_qObj;
 signals:
-    
+
 public slots:
-    
+
 };
 #endif // LIGHT_H
+
