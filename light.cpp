@@ -8,10 +8,6 @@ const GLfloat step=pi/np;
 
 light::light(QWidget *parent) :
     QGLWidget(parent),
-   /* m_xRotate(0),
-    m_yRotate(0),
-    m_xGo(0),
-    m_yGo(0)*/
     m_x(0.0f),
     m_y(0.0f),
     m_dx(0.0f),
@@ -44,6 +40,7 @@ void light::initializeGL()
    glEnable(GL_LIGHT0);
    glEnable(GL_DEPTH_TEST);
 
+   //падрыхтоўка стэка матрыц трансфармацыі
    glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();
    glPushMatrix();
@@ -52,14 +49,6 @@ void light::initializeGL()
 void light::paintGL()
 {
    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-
-   /*glMatrixMode(GL_MODELVIEW);
-   glLoadIdentity();
-
-   glTranslatef(m_xGo, -m_yGo, 0.0);
-
-   glRotatef(m_Rotate,m_yGo, m_xGo,0);*/
-
    glPopMatrix();
    GLfloat tempMatrix[16];
    glGetFloatv(GL_MODELVIEW_MATRIX,tempMatrix);
@@ -78,12 +67,6 @@ void light::paintGL()
    gluSphere(m_qObj,R,20,20);
    drawAxis();
    glFlush();
-//glRotatef(m_yRotate, 0, 1.0f,0);
-//glRotatef(m_yRotate, -m_yGo, m_xGo, 0.0f);
-
-
-
-//drawAxis();
 }
 void light::drawAxis() // построить оси координат
 {
@@ -115,22 +98,12 @@ void light::mousePressEvent(QMouseEvent *pe) {
 }
 
 void light::mouseMoveEvent(QMouseEvent *pe) {
-   /* m_xRotate += 180 * (GLfloat)(pe->y() - m_ptPosition.y()) / height();
-    m_yRotate += 180 * (GLfloat)(pe->x() - m_ptPosition.x()) / width();
-
-    m_xGo=(m_yRotate*pi*R)/180;
-    m_yGo=-(m_xRotate*pi*R)/180;
-    */
     m_dy=-2 * (GLfloat)(pe->y() - m_ptPosition.y()) / height();
     m_dx=+2 * (GLfloat)(pe->x() - m_ptPosition.x()) / width();
-    //m_yRotate=(m_xGo*180)/(pi*R);
-    //m_xRotate=(m_yGo*180)/(pi*R);
-    //m_Rotate=(sqrt(m_yGo*m_yGo+m_xGo*m_xGo)*180.0)/(pi*R);
     m_ptPosition = pe->pos();
     updateGL();
-
-
 }
+
 void light::resizeGL(int w, int h)
 {
    glViewport(0,0,(GLsizei) w, (GLsizei) h);
@@ -139,6 +112,7 @@ void light::resizeGL(int w, int h)
    //if (w<=h)
    //  glOrtho(-1.5,1.5,-0.5*(GLfloat)h/(GLfloat)w,0.5*(GLfloat)h/(GLfloat)w,-10.0,10.0);
    //else
+   //GLfloat left=-0.2,right=0.2,bottom=-0.1125,top=0.1125,near=1.0,far=50.0;
    glOrtho(-1.5*(GLfloat)w/(GLfloat)h,1.5*(GLfloat)w/(GLfloat)h,-1.5,1.5,-10.0,10.0);
    glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();
@@ -181,21 +155,12 @@ void light::keyPressEvent(QKeyEvent *pe){
     default:
         QWidget::keyPressEvent(pe);
     }
-
-    /*m_yRotate=(m_xGo*180)/(pi*R);
-    m_xRotate=(m_yGo*180)/(pi*R);
-    m_Rotate=(sqrt(m_yGo*m_yGo+m_xGo*m_xGo)*180.0)/(pi*R);*/
     updateGL();
 
 }
 
 void light::defaultScene() // наблюдение сцены по умолчанию
 {
-  /* m_xRotate=0;
-   m_yRotate=0;
-   m_xGo=0;
-   m_yGo=0;
-   */
    glPopMatrix();
    glLoadIdentity();
    glPushMatrix();

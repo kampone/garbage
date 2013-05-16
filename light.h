@@ -13,20 +13,7 @@ public:
 
     explicit light(QWidget *parent = 0);
 
-
 protected:
-
-   /*GLfloat m_xRotate;
-   GLfloat m_yRotate;
-   GLfloat m_xGo;
-   GLfloat m_yGo;
-   GLfloat m_Rotate;
-   */
-   GLfloat m_x;
-   GLfloat m_y;
-   GLfloat m_dx;
-   GLfloat m_dy;
-   QPoint m_ptPosition;
    void drawAxis();
    virtual void initializeGL();
    virtual void resizeGL(int nWidth, int nHeight);
@@ -37,6 +24,11 @@ protected:
    void defaultScene();
 private:
     GLUquadricObj* m_qObj;
+    GLfloat m_x;
+    GLfloat m_y;
+    GLfloat m_dx;
+    GLfloat m_dy;
+    QPoint m_ptPosition;
 signals:
 
 public slots:
