@@ -26,20 +26,19 @@ void light::initializeGL()
    GLfloat light_position[]={1.0,1.0,1.0,0.0};
    GLfloat white_light[]={1.0,1.0,1.0,1.0};
 
-   glClearColor(0.0,0.0,0.0,0.0);
+   glClearColor(0.0,0.0,0.0,1.0);
    glShadeModel(GL_FLAT);
    glMaterialfv(GL_FRONT,GL_SPECULAR,mat_specular);
    glMaterialfv(GL_FRONT,GL_SHININESS,mat_shininess);
-
-
-   glLightfv(GL_LIGHT0,GL_POSITION,light_position);
+/*
+glLightfv(GL_LIGHT0,GL_POSITION,light_position);
    glLightfv(GL_LIGHT0,GL_DIFFUSE,white_light);
    glLightfv(GL_LIGHT0,GL_SPECULAR,white_light);
 
    glEnable(GL_LIGHTING);
    glEnable(GL_LIGHT0);
    glEnable(GL_DEPTH_TEST);
-
+*/
    //падрыхтоўка стэка матрыц трансфармацыі
    glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();
@@ -61,11 +60,15 @@ void light::paintGL()
    glLoadIdentity();
    m_x+=m_dx;
    m_y+=m_dy;
-   glTranslatef(m_x,m_y,0.0f);
-   glMultMatrixf(tempMatrix);
 
-   gluSphere(m_qObj,R,20,20);
-   drawAxis();
+   glTranslatef(m_x,m_y,0.0f);
+   drawCircles();
+   glMultMatrixf(tempMatrix);
+glColor4f(1.00f, 1.00f, 1.00f, 1.0f);
+
+gluSphere(m_qObj,R,20,20);
+
+  // drawAxis();
    glFlush();
 }
 void light::drawAxis() // построить оси координат
@@ -91,6 +94,18 @@ void light::drawAxis() // построить оси координат
       glVertex3f( 0.0f,  0.0f,  1.0f);
       glVertex3f( 0.0f,  0.0f, -1.0f);
    glEnd();
+}
+void light::drawCircles(){
+
+    glBegin(GL_TRIANGLE_FAN);
+    for(GLfloat a = 0.0f; a < 360.0f; a += step) {
+        theta = 2.0f * pi * a / 180.0f;
+        glColor4f(0.0f, 1.0f, 0.0f, 1.0f);
+        glVertex3f(R * cos(theta)-0.1f,R * sin(theta), 0);
+        //glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
+       // glVertex3f(R * cos(theta), R * sin(theta), R);
+    }
+    glEnd();
 }
 
 void light::mousePressEvent(QMouseEvent *pe) {
@@ -141,7 +156,7 @@ void light::keyPressEvent(QKeyEvent *pe){
         m_dx= 0.0f;
         m_dy=-0.03f;
         break;
-    case Qt::Key_A:          
+    case Qt::Key_A:
         m_dx=-0.03;
         m_dy= 0.0f;
         break;
