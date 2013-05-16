@@ -8,10 +8,14 @@ const GLfloat step=pi/np;
 
 light::light(QWidget *parent) :
     QGLWidget(parent),
-    m_xRotate(0),
+   /* m_xRotate(0),
     m_yRotate(0),
     m_xGo(0),
-    m_yGo(0)
+    m_yGo(0)*/
+    m_x(0.0f),
+    m_y(0.0f),
+    m_dx(0.0f),
+    m_dy(0.0f)
 {
 
   m_qObj = gluNewQuadric();
@@ -40,21 +44,40 @@ void light::initializeGL()
    glEnable(GL_LIGHT0);
    glEnable(GL_DEPTH_TEST);
 
+   glMatrixMode(GL_MODELVIEW);
+   glLoadIdentity();
+   glPushMatrix();
 }
 
 void light::paintGL()
 {
    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
-   glFlush();
-   gluSphere(m_qObj,R,20,20);
-
-   glMatrixMode(GL_MODELVIEW);
+   /*glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();
 
    glTranslatef(m_xGo, -m_yGo, 0.0);
 
-   glRotatef(m_Rotate,m_yGo, m_xGo,0);
+   glRotatef(m_Rotate,m_yGo, m_xGo,0);*/
+
+   glPopMatrix();
+   GLfloat tempMatrix[16];
+   glGetFloatv(GL_MODELVIEW_MATRIX,tempMatrix);
+   glLoadIdentity();
+   GLfloat angle=(sqrt(m_dy*m_dy+m_dx*m_dx)*180.0)/(pi*R);
+   glRotatef(angle,-m_dy,m_dx,0.0f);
+   glMultMatrixf(tempMatrix);
+   glGetFloatv(GL_MODELVIEW_MATRIX,tempMatrix);
+   glPushMatrix();
+   glLoadIdentity();
+   m_x+=m_dx;
+   m_y+=m_dy;
+   glTranslatef(m_x,m_y,0.0f);
+   glMultMatrixf(tempMatrix);
+
+   gluSphere(m_qObj,R,20,20);
+   drawAxis();
+   glFlush();
 //glRotatef(m_yRotate, 0, 1.0f,0);
 //glRotatef(m_yRotate, -m_yGo, m_xGo, 0.0f);
 
@@ -98,14 +121,15 @@ void light::mouseMoveEvent(QMouseEvent *pe) {
     m_xGo=(m_yRotate*pi*R)/180;
     m_yGo=-(m_xRotate*pi*R)/180;
     */
-    m_yGo+=2 * (GLfloat)(pe->y() - m_ptPosition.y()) / height();
-    m_xGo+=2 * (GLfloat)(pe->x() - m_ptPosition.x()) / height();
+    m_dy=-2 * (GLfloat)(pe->y() - m_ptPosition.y()) / height();
+    m_dx=+2 * (GLfloat)(pe->x() - m_ptPosition.x()) / width();
     //m_yRotate=(m_xGo*180)/(pi*R);
     //m_xRotate=(m_yGo*180)/(pi*R);
-    m_Rotate=(sqrt(m_yGo*m_yGo+m_xGo*m_xGo)*180.0)/(pi*R);
+    //m_Rotate=(sqrt(m_yGo*m_yGo+m_xGo*m_xGo)*180.0)/(pi*R);
+    m_ptPosition = pe->pos();
     updateGL();
 
-    m_ptPosition = pe->pos();
+
 }
 void light::resizeGL(int w, int h)
 {
@@ -136,17 +160,20 @@ void light::keyPressEvent(QKeyEvent *pe){
         QApplication::exit();
         break;
     case Qt::Key_W:
-        m_yGo-=0.03;
-
+        m_dx= 0.0f;
+        m_dy=+0.03f;
         break;
     case Qt::Key_S:
-        m_yGo+=0.03;
+        m_dx= 0.0f;
+        m_dy=-0.03f;
         break;
-    case Qt::Key_A:
-        m_xGo-=0.03;
+    case Qt::Key_A:          
+        m_dx=-0.03;
+        m_dy= 0.0f;
         break;
     case Qt::Key_D:
-        m_xGo+=0.03;
+        m_dx=+0.03;
+        m_dy= 0.0f;
         break;
     case Qt::Key_Space:
         defaultScene();
@@ -155,19 +182,27 @@ void light::keyPressEvent(QKeyEvent *pe){
         QWidget::keyPressEvent(pe);
     }
 
-    m_yRotate=(m_xGo*180)/(pi*R);
+    /*m_yRotate=(m_xGo*180)/(pi*R);
     m_xRotate=(m_yGo*180)/(pi*R);
-    m_Rotate=(sqrt(m_yGo*m_yGo+m_xGo*m_xGo)*180.0)/(pi*R);
+    m_Rotate=(sqrt(m_yGo*m_yGo+m_xGo*m_xGo)*180.0)/(pi*R);*/
     updateGL();
 
 }
 
 void light::defaultScene() // наблюдение сцены по умолчанию
 {
-   m_xRotate=0;
+  /* m_xRotate=0;
    m_yRotate=0;
    m_xGo=0;
    m_yGo=0;
+   */
+   glPopMatrix();
+   glLoadIdentity();
+   glPushMatrix();
+   m_x=0.0f;
+   m_y=0.0f;
+   m_dx=0.0f;
+   m_dy=0.0f;
 }
 
 
