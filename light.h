@@ -15,6 +15,7 @@ public:
 
 protected:
    void drawAxis();
+   void drawCircles();
    virtual void initializeGL();
    virtual void resizeGL(int nWidth, int nHeight);
    virtual void paintGL();
@@ -29,6 +30,7 @@ private:
     GLfloat m_dx;
     GLfloat m_dy;
     QPoint m_ptPosition;
+    GLfloat theta;
 signals:
 
 public slots:
