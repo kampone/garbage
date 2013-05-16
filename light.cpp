@@ -1,12 +1,17 @@
 #include "light.h"
 #include <QGLWidget>
 
-const  GLfloat pi=3.1415926535897932384626433832795, k=pi/180;
+const GLfloat pi=3.1415926535897932384626433832795, k=pi/180;
 const GLuint np=36;
 const GLfloat R=0.3f;
 const GLfloat step=pi/np;
+
 light::light(QWidget *parent) :
-    QGLWidget(parent), m_xRotate(0), m_yRotate(0), m_xGo(0), m_yGo(0)
+    QGLWidget(parent),
+    m_xRotate(0),
+    m_yRotate(0),
+    m_xGo(0),
+    m_yGo(0)
 {
 
   m_qObj = gluNewQuadric();
@@ -81,6 +86,7 @@ void light::drawAxis() // построить оси координат
       glVertex3f( 0.0f,  0.0f, -1.0f);
    glEnd();
 }
+
 void light::mousePressEvent(QMouseEvent *pe) {
     m_ptPosition = pe->pos();
 }
@@ -109,7 +115,7 @@ void light::resizeGL(int w, int h)
    //if (w<=h)
    //  glOrtho(-1.5,1.5,-0.5*(GLfloat)h/(GLfloat)w,0.5*(GLfloat)h/(GLfloat)w,-10.0,10.0);
    //else
-      glOrtho(-1.5*(GLfloat)w/(GLfloat)h,1.5*(GLfloat)w/(GLfloat)h,-1.5,1.5,-10.0,10.0);
+   glOrtho(-1.5*(GLfloat)w/(GLfloat)h,1.5*(GLfloat)w/(GLfloat)h,-1.5,1.5,-10.0,10.0);
    glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();
   /*  glViewport(0, 0, (GLint)w, (GLint)h);
@@ -155,6 +161,7 @@ void light::keyPressEvent(QKeyEvent *pe){
     updateGL();
 
 }
+
 void light::defaultScene() // наблюдение сцены по умолчанию
 {
    m_xRotate=0;
