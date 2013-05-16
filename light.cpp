@@ -26,28 +26,68 @@ void light::initializeGL()
    GLfloat light_position[]={1.0,1.0,1.0,0.0};
    GLfloat white_light[]={1.0,1.0,1.0,1.0};
 
-   glClearColor(0.0,0.0,0.0,1.0);
+   glClearColor(0.0,0.0,0.0,0.0);
    glShadeModel(GL_FLAT);
    glMaterialfv(GL_FRONT,GL_SPECULAR,mat_specular);
    glMaterialfv(GL_FRONT,GL_SHININESS,mat_shininess);
-/*
-glLightfv(GL_LIGHT0,GL_POSITION,light_position);
+
+
+   glLightfv(GL_LIGHT0,GL_POSITION,light_position);
    glLightfv(GL_LIGHT0,GL_DIFFUSE,white_light);
    glLightfv(GL_LIGHT0,GL_SPECULAR,white_light);
 
    glEnable(GL_LIGHTING);
    glEnable(GL_LIGHT0);
    glEnable(GL_DEPTH_TEST);
-*/
+   glEnable(GL_TEXTURE_2D);
+
+
+    genTextures();
+
    //падрыхтоўка стэка матрыц трансфармацыі
    glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();
    glPushMatrix();
 }
+void light::genTextures() // функция genTexture() класса Scene3D, создаёт текстуры
+{
+   // загрузка изображений
+   QImage image1; // создаём объекты класса QImage (изображения)
 
+    image1.load("../textures/7.jpg"); // загружаем изображение в переменную image1
+
+   image1=QGLWidget::convertToGLFormat(image1); // конвертируем изображение в формат для работы с OpenGL
+
+
+
+   glGenTextures(1, &textureID); // создаём два имени и записываем их в массив
+
+   // создаём и связываем текстурные объекты с состоянием текстуры
+   // 1-ый текстурный объект
+   glBindTexture(GL_TEXTURE_2D, textureID); // создаём и связываем 1-ый текстурный объект с последующим состоянием текстуры
+   glTexImage2D(GL_TEXTURE_2D, 0, 3, (GLsizei)image1.width(), (GLsizei)image1.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, image1.bits()); // связываем текстурный объект с изображением
+
+   glEnable(GL_DEPTH_TEST);
+
+   //glEnable(GL_LIGHTING);
+
+   //glEnable(GL_LIGHT0);
+
+   glEnable(GL_NORMALIZE);
+
+   glEnable(GL_COLOR_MATERIAL);
+
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); // задана линейная фильтрация вблизи
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); // задана линейная фильтрация вдали
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); // при фильтрации игнорируются тексели, выходящие за границу текстуры для s координаты
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); // при фильтрации игнорируются тексели, выходящие за границу текстуры для t координаты
+   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); // цвет текселя полностью замещает цвет фрагмента фигуры
+}
 void light::paintGL()
 {
    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+
+
    glPopMatrix();
    GLfloat tempMatrix[16];
    glGetFloatv(GL_MODELVIEW_MATRIX,tempMatrix);
@@ -60,15 +100,12 @@ void light::paintGL()
    glLoadIdentity();
    m_x+=m_dx;
    m_y+=m_dy;
-
    glTranslatef(m_x,m_y,0.0f);
-   drawCircles();
    glMultMatrixf(tempMatrix);
-glColor4f(1.00f, 1.00f, 1.00f, 1.0f);
+  gluQuadricTexture(m_qObj,1);
+   gluSphere(m_qObj,R,20,20);
 
-gluSphere(m_qObj,R,20,20);
-
-  // drawAxis();
+ //  drawAxis();
    glFlush();
 }
 void light::drawAxis() // построить оси координат
@@ -94,18 +131,6 @@ void light::drawAxis() // построить оси координат
       glVertex3f( 0.0f,  0.0f,  1.0f);
       glVertex3f( 0.0f,  0.0f, -1.0f);
    glEnd();
-}
-void light::drawCircles(){
-
-    glBegin(GL_TRIANGLE_FAN);
-    for(GLfloat a = 0.0f; a < 360.0f; a += step) {
-        theta = 2.0f * pi * a / 180.0f;
-        glColor4f(0.0f, 1.0f, 0.0f, 1.0f);
-        glVertex3f(R * cos(theta)-0.1f,R * sin(theta), 0);
-        //glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
-       // glVertex3f(R * cos(theta), R * sin(theta), R);
-    }
-    glEnd();
 }
 
 void light::mousePressEvent(QMouseEvent *pe) {
@@ -184,5 +209,4 @@ void light::defaultScene() // наблюдение сцены по умолча�
    m_dx=0.0f;
    m_dy=0.0f;
 }
-
 
